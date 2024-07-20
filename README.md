@@ -12,7 +12,7 @@
 - マイクラ内に現れる「[プラグインリロード通知] プラグイン名{プラグイン名} [リロード]」のリロードをクリック
 
 ## 前提プラグイン
-- [PluginManager](https://github.com/Lenni0451/SpigotPluginManager)
+- [PluginManager](https://github.com/Lenni0451/SpigotPluginManager) - プラグインをリロードに使用
 
 ## configファイル
 - Port - 通信を受け付けるポートを指定する

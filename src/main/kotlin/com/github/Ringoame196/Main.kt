@@ -7,13 +7,12 @@ class Main : JavaPlugin() {
     private val serverManager = ServerManager(plugin)
     override fun onEnable() {
         super.onEnable()
-        plugin.saveDefaultConfig()
-        serverManager.start()
-        server.pluginManager.registerEvents(Events(), plugin)
+        plugin.saveDefaultConfig() // configファイル生成
+        serverManager.start() // サーバー起動
     }
 
     override fun onDisable() {
         super.onDisable()
-        serverManager.stop()
+        serverManager.stop() // サーバーストップ
     }
 }

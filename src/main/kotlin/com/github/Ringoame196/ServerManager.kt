@@ -17,18 +17,19 @@ class ServerManager(private val plugin: JavaPlugin) {
 
     fun start() {
         server.createContext("/plugin") { exchange ->
-            val config = plugin.config
+            val config = plugin.config // configファイル
             val query = exchange.requestURI.query
-            val pluginName = query?.split("=")?.getOrNull(1) ?: "null"
+            val pluginName = query?.split("=")?.getOrNull(1) ?: "null" // プラグイン名取得
 
-            val response: String
-            if (isPluginEnabled(pluginName)) {
+            val response: String // webサイトに表示させるメッセージ
+            if (isPluginEnabled(pluginName)) { // プラグインを見つけた場合
                 response = "Reload $pluginName"
                 val command = config.getString("ReloadCommand")?.replace("@pluginName", pluginName) ?: "/pluginmanager reload $pluginName"
                 sendClickableCommandMessage(command, pluginName)
-            } else {
+            } else { // プラグインを見つけられなかった場合
                 response = "pluginNotFound"
             }
+            // webサイトの内容を書き換える
             exchange.sendResponseHeaders(200, response.length.toLong())
             exchange.responseBody.use { os: OutputStream ->
                 os.write(response.toByteArray())
@@ -37,21 +38,21 @@ class ServerManager(private val plugin: JavaPlugin) {
 
         server.executor = null // default executor
         server.start()
-        println("Server started on port $port")
+        println("[${plugin.name}] Server started on port $port") // 通知
     }
 
     fun stop() {
-        server.stop(1) // 1 second delay before stopping
-        println("Server stopped")
+        server.stop(1) // サーバーを止める
+        println("[${plugin.name}] Server stopped")
     }
 
-    private fun isPluginEnabled(pluginName: String): Boolean {
+    private fun isPluginEnabled(pluginName: String): Boolean { // プラグインがあるか確認
         return Bukkit.getPluginManager().getPlugin(pluginName) != null
     }
 
-    private fun sendClickableCommandMessage(command: String, pluginName: String) {
+    private fun sendClickableCommandMessage(command: String, pluginName: String) { // プラグインリロードメッセージ 送信
         // メインメッセージ部分
-        val mainMessage = TextComponent("${ChatColor.YELLOW}[プラグインリロード通知] プラグイン名($pluginName) ")
+        val mainMessage = TextComponent("${ChatColor.YELLOW}[${plugin.name}] プラグイン名($pluginName) ")
 
         // クリック可能なリロード部分
         val reloadComponent = TextComponent("${ChatColor.AQUA}[リロード]")
@@ -65,8 +66,11 @@ class ServerManager(private val plugin: JavaPlugin) {
         // メインメッセージにリロード部分を追加
         mainMessage.addExtra(reloadComponent)
 
-        // メッセージをプレイヤーに送信
+        // メッセージをOPプレイヤーに送信
         for (player in Bukkit.getOnlinePlayers()) {
+            if (!player.isOp) {
+                continue
+            }
             player.spigot().sendMessage(mainMessage)
         }
     }

@@ -23,7 +23,7 @@
 
 ## 開発環境
 - Minecraft Version : 1.20.1
-- Kotlin Version : 1.8.0
+- Kotlin Version : 1.6.10
 
 ## プロジェクト情報
 - プロジェクトパス : Ringoame196/AutomaticCreatingPluginUpdate.git
